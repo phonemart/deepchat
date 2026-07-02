@@ -1,7 +1,7 @@
 {
-  "name": "DeepChat",
-  "short_name": "DeepChat",
-  "description": "ผู้ช่วย AI ส่วนตัว (DeepSeek)",
+  "name": "AI Office",
+  "short_name": "AI Office",
+  "description": "ออฟฟิศ AI — ผู้ช่วยตัวการ์ตูนเดินทำงาน คลิกคุยได้ (DeepSeek)",
   "start_url": ".",
   "scope": ".",
   "display": "standalone",
