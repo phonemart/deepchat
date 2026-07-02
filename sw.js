@@ -1,5 +1,5 @@
 // DeepChat service worker — cache app shell so it opens offline / loads instantly
-const CACHE='deepchat-v2';
+const CACHE='deepchat-v3';
 const SHELL=['./','index.html','manifest.json','icon-192.png','icon-512.png','icon-180.png'];
 
 self.addEventListener('install',e=>{
