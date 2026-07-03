@@ -76,6 +76,8 @@
     background:linear-gradient(135deg,rgba(255,111,174,.16),rgba(255,160,205,.06));border-bottom:1px solid var(--border)}
   .chead .cav{width:40px;height:40px;border-radius:50%;background:var(--panel2);overflow:hidden;flex:none;box-shadow:var(--shadow)}
   .chead .cav svg{width:130%;height:130%;display:block;margin:-15%}
+  .chead{gap:6px;padding-left:10px;padding-right:10px}
+  .chead .iconbtn{width:34px;height:34px;font-size:15px}
   .chead .who{flex:1;min-width:0}
   .chead .who b{display:block;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .chead .who span{font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block}
@@ -170,6 +172,7 @@
     <button class="iconbtn" id="backBtn">‹</button>
     <div class="cav" id="cAv"></div>
     <div class="who"><b id="cName">เพื่อนซี้</b><span id="cRole">ผู้ช่วย</span></div>
+    <button class="iconbtn" id="clearBtn" title="เริ่มแชทใหม่ (ล้างประวัติ)">🧹</button>
     <button class="iconbtn" id="editBtn" title="แก้ไข">✏️</button>
   </div>
   <div id="chat"></div>
@@ -296,6 +299,11 @@ function openChat(id){
 }
 $('#backBtn').onclick=()=>{$('#chatView').classList.remove('show');curGem=null;renderHome();};
 $('#editBtn').onclick=()=>{if(curGem)openGem(curGem.id)};
+$('#clearBtn').onclick=()=>{
+  if(!curGem||!curGem.messages.length)return;
+  if(!confirm('เริ่มแชทใหม่กับ '+curGem.name+'? ประวัติแชทเดิมจะถูกล้าง (เพื่อนคนนี้ยังอยู่)'))return;
+  curGem.messages=[]; saveGems(); renderChat();
+};
 
 function renderChat(){
   chat.innerHTML='';
