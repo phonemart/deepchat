@@ -1,7 +1,7 @@
 {
-  "name": "DeepChat",
-  "short_name": "DeepChat",
-  "description": "ผู้ช่วย AI ส่วนตัว (DeepSeek)",
+  "name": "เพื่อนซี้ AI",
+  "short_name": "เพื่อนซี้",
+  "description": "แก๊งผู้ช่วย AI น่ารัก แต่ละตัวเก่งคนละอย่าง (DeepSeek)",
   "start_url": ".",
   "scope": ".",
   "display": "standalone",

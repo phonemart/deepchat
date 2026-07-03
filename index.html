@@ -6,26 +6,23 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="DeepChat">
+<meta name="apple-mobile-web-app-title" content="เพื่อนซี้">
 <meta name="theme-color" content="#1a1119">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-180.png">
-<title>DeepChat</title>
+<title>เพื่อนซี้ AI</title>
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <style>
   :root{
-    /* dark cute pink (default) */
     --bg:#1a1119; --panel:#241621; --panel2:#30202c; --border:#4a2f40;
     --text:#f8ecf3; --muted:#c9a7bb; --accent:#ff6fae; --accent2:#ffa0cd; --danger:#ff5c7c;
-    --bot:#241621; --shadow:0 6px 20px rgba(255,111,174,.10);
-    --glow:0 4px 16px rgba(255,111,174,.35);
+    --bot:#241621; --shadow:0 6px 20px rgba(255,111,174,.10); --glow:0 4px 16px rgba(255,111,174,.35);
     --safe-t:env(safe-area-inset-top); --safe-b:env(safe-area-inset-bottom);
   }
   body[data-theme="light"]{
     --bg:#fff5fa; --panel:#ffffff; --panel2:#fff0f6; --border:#ffd6e8;
     --text:#5a2f42; --muted:#b07f95; --accent:#ff5fa2; --accent2:#ff92c4;
-    --bot:#ffffff; --shadow:0 6px 20px rgba(255,111,174,.14);
-    --glow:0 6px 18px rgba(255,111,174,.4);
+    --bot:#ffffff; --shadow:0 6px 20px rgba(255,111,174,.14); --glow:0 6px 18px rgba(255,111,174,.4);
   }
   *{box-sizing:border-box; -webkit-tap-highlight-color:transparent}
   html,body{height:100%; margin:0}
@@ -35,37 +32,62 @@
       radial-gradient(900px 500px at 100% -5%, rgba(255,111,174,.14), transparent 60%),
       radial-gradient(700px 500px at -10% 105%, rgba(160,120,255,.10), transparent 60%),
       var(--bg);
-    color:var(--text); display:flex; flex-direction:column; height:100dvh; overflow:hidden;
-    transition:background .3s,color .3s;
+    color:var(--text); display:flex; flex-direction:column; height:100dvh; overflow:hidden; transition:background .3s,color .3s;
   }
-  header{
-    display:flex; align-items:center; gap:7px; padding:calc(10px + var(--safe-t)) 12px 10px;
+  .topbar{display:flex;align-items:center;gap:8px;padding:calc(10px + var(--safe-t)) 12px 10px;
     background:linear-gradient(135deg,rgba(255,111,174,.16),rgba(255,160,205,.06));
-    border-bottom:1px solid var(--border); backdrop-filter:blur(8px);
-  }
-  .iconbtn{
-    background:var(--panel2);color:var(--text);border:1px solid var(--border);
-    border-radius:12px;width:37px;height:37px;font-size:16px;cursor:pointer;flex:none;
-    display:flex;align-items:center;justify-content:center;transition:transform .1s;
-  }
-  .iconbtn:active{transform:scale(.9)}
-  header .logo{
-    width:34px;height:34px;border-radius:50%;
-    background:linear-gradient(135deg,var(--accent),var(--accent2));
-    display:flex;align-items:center;justify-content:center;font-size:18px;flex:none;
-    box-shadow:var(--glow);
-  }
-  header h1{font-size:16px;margin:0;font-weight:800;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+    border-bottom:1px solid var(--border);backdrop-filter:blur(8px);z-index:6}
+  .topbar .logo{width:36px;height:36px;border-radius:50%;background:var(--panel2);overflow:hidden;flex:none;box-shadow:var(--glow)}
+  .topbar .logo svg{width:132%;height:132%;display:block;margin:-16%}
+  .topbar h1{font-size:17px;margin:0;font-weight:800;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
     background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
-  header select{
-    background:var(--panel2);color:var(--text);border:1px solid var(--border);
-    border-radius:11px;padding:8px 6px;font-size:12px;cursor:pointer;max-width:96px;
-  }
+  .iconbtn{background:var(--panel2);color:var(--text);border:1px solid var(--border);border-radius:12px;
+    width:37px;height:37px;font-size:16px;cursor:pointer;flex:none;display:flex;align-items:center;justify-content:center;transition:transform .1s}
+  .iconbtn:active{transform:scale(.9)}
+  .addbtn{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border:none;border-radius:20px;
+    padding:9px 13px;font-size:13px;font-weight:700;cursor:pointer;box-shadow:var(--glow);flex:none}
+  .addbtn:active{transform:scale(.95)}
 
+  /* ---------- GALLERY ---------- */
+  #home{flex:1;display:flex;flex-direction:column;overflow:hidden}
+  #gallery{flex:1;overflow-y:auto;padding:16px;-webkit-overflow-scrolling:touch}
+  .sub{color:var(--muted);font-size:13px;margin:0 2px 14px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:14px}
+  .gcard{background:var(--panel);border:1px solid var(--border);border-radius:20px;padding:16px 12px 14px;
+    display:flex;flex-direction:column;align-items:center;text-align:center;cursor:pointer;box-shadow:var(--shadow);
+    transition:transform .12s,border-color .12s;position:relative}
+  .gcard:active{transform:scale(.96)}
+  .gcard:hover{border-color:var(--accent)}
+  .gcard .gm{width:82px;height:82px;margin-bottom:6px}
+  .gcard .gm svg{width:100%;height:100%;display:block}
+  .gcard .gn{font-weight:800;font-size:15px;margin-bottom:2px}
+  .gcard .gr{font-size:12px;color:var(--muted);line-height:1.3}
+  .gcard .ed{position:absolute;top:8px;right:8px;width:26px;height:26px;border-radius:8px;border:none;
+    background:var(--panel2);color:var(--muted);font-size:12px;cursor:pointer;opacity:.7}
+  .gcard .ed:active{opacity:1}
+  .addcard{border:2px dashed var(--border);background:transparent;box-shadow:none;justify-content:center;color:var(--muted);min-height:150px}
+  .addcard .plus{font-size:34px;color:var(--accent);margin-bottom:4px}
+  .addcard .gn{color:var(--text)}
+
+  /* ---------- CHAT ---------- */
+  #chatView{position:fixed;inset:0;z-index:15;background:var(--bg);display:none;flex-direction:column}
+  #chatView.show{display:flex}
+  .chead{display:flex;align-items:center;gap:10px;padding:calc(10px + var(--safe-t)) 12px 10px;
+    background:linear-gradient(135deg,rgba(255,111,174,.16),rgba(255,160,205,.06));border-bottom:1px solid var(--border)}
+  .chead .cav{width:40px;height:40px;border-radius:50%;background:var(--panel2);overflow:hidden;flex:none;box-shadow:var(--shadow)}
+  .chead .cav svg{width:130%;height:130%;display:block;margin:-15%}
+  .chead .who{flex:1;min-width:0}
+  .chead .who b{display:block;font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .chead .who span{font-size:12px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block}
   #chat{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px;-webkit-overflow-scrolling:touch}
   .msg{max-width:90%;padding:11px 15px;border-radius:20px;line-height:1.55;font-size:15px;word-wrap:break-word;overflow-wrap:anywhere;box-shadow:var(--shadow)}
   .msg.user{align-self:flex-end;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border-bottom-right-radius:6px;white-space:pre-wrap}
-  .msg.bot{align-self:flex-start;background:var(--bot);border:1px solid var(--border);border-bottom-left-radius:6px}
+  .botrow{display:flex;gap:8px;align-self:flex-start;max-width:94%}
+  .avatar{width:34px;height:34px;border-radius:50%;background:var(--panel2);border:1px solid var(--border);flex:none;overflow:hidden;margin-top:auto;box-shadow:var(--shadow)}
+  .avatar svg{width:130%;height:130%;display:block;margin:-15%}
+  .avatar.happy{animation:pop .5s ease}
+  @keyframes pop{0%{transform:scale(.7)}55%{transform:scale(1.15)}100%{transform:scale(1)}}
+  .msg.bot{background:var(--bot);border:1px solid var(--border);border-bottom-left-radius:6px}
   .msg.bot p{margin:.4em 0} .msg.bot pre{background:rgba(0,0,0,.22);padding:10px;border-radius:12px;overflow-x:auto}
   body[data-theme="light"] .msg.bot pre{background:#fff0f6}
   .msg.bot code{background:rgba(0,0,0,.22);padding:2px 6px;border-radius:6px;font-size:13px}
@@ -76,144 +98,128 @@
   .msg.bot table{border-collapse:collapse;width:100%;font-size:13px;margin:.4em 0;display:block;overflow-x:auto}
   .msg.bot th,.msg.bot td{border:1px solid var(--border);padding:6px 8px}
   .copybtn{margin-top:7px;background:none;border:none;color:var(--muted);font-size:12px;cursor:pointer;padding:2px 0}
-  .copybtn:active{color:var(--accent)}
   .think{font-size:13px;color:var(--muted);border-left:2px solid var(--accent);padding:6px 0 6px 10px;margin-bottom:6px;white-space:pre-wrap}
   .think summary{cursor:pointer;color:var(--accent);font-weight:700;margin-bottom:4px}
-
-  .empty{margin:auto;text-align:center;color:var(--muted);padding:16px;max-width:420px}
-  .empty .big{font-size:56px;margin-bottom:6px;animation:bounce 2.4s ease-in-out infinite}
+  .cempty{margin:auto;text-align:center;color:var(--muted);padding:16px;max-width:430px}
+  .cempty .buddy{width:132px;height:132px;margin:0 auto 4px;animation:bounce 2.6s ease-in-out infinite;filter:drop-shadow(0 8px 10px rgba(255,111,174,.25))}
+  .cempty .buddy svg{width:100%;height:100%;display:block}
   @keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
-  .empty .hello{font-size:17px;font-weight:800;color:var(--text);margin-bottom:4px}
+  .cempty .hello{font-size:16px;font-weight:800;color:var(--text);margin-bottom:4px}
   .chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:16px}
-  .chip{background:var(--panel2);border:1px solid var(--border);color:var(--text);
-    padding:9px 14px;border-radius:20px;font-size:13px;cursor:pointer;transition:transform .1s;box-shadow:var(--shadow)}
+  .chip{background:var(--panel2);border:1px solid var(--border);color:var(--text);padding:9px 14px;border-radius:20px;font-size:13px;cursor:pointer;box-shadow:var(--shadow)}
   .chip:active{transform:scale(.94)}
-
-  footer{padding:10px 12px calc(10px + var(--safe-b));border-top:1px solid var(--border);
-    background:linear-gradient(0deg,var(--panel),rgba(255,111,174,.04))}
+  .cfoot{padding:10px 12px calc(10px + var(--safe-b));border-top:1px solid var(--border);background:linear-gradient(0deg,var(--panel),rgba(255,111,174,.04))}
   .inputbar{display:flex;gap:8px;align-items:flex-end}
-  textarea{
-    flex:1;background:var(--panel2);color:var(--text);border:1px solid var(--border);
-    border-radius:22px;padding:12px 16px;font-size:16px;resize:none;max-height:140px;
-    font-family:inherit;line-height:1.4;transition:border-color .15s;
-  }
+  textarea{flex:1;background:var(--panel2);color:var(--text);border:1px solid var(--border);border-radius:22px;
+    padding:12px 16px;font-size:16px;resize:none;max-height:140px;font-family:inherit;line-height:1.4;transition:border-color .15s}
   textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(255,111,174,.15)}
-  #send{
-    background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border:none;
-    width:47px;height:47px;border-radius:50%;font-size:19px;cursor:pointer;flex:none;
-    display:flex;align-items:center;justify-content:center;box-shadow:var(--glow);transition:transform .1s;
-  }
-  #send:active{transform:scale(.9)} #send:disabled{opacity:.5}
-  #send.stop{background:var(--danger)}
-
-  #down{position:absolute;right:16px;bottom:100px;width:40px;height:40px;border-radius:50%;
-    background:var(--panel2);border:1px solid var(--border);color:var(--accent);font-size:18px;
-    display:none;align-items:center;justify-content:center;cursor:pointer;box-shadow:var(--shadow);z-index:5}
+  #send{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border:none;width:47px;height:47px;
+    border-radius:50%;font-size:19px;cursor:pointer;flex:none;display:flex;align-items:center;justify-content:center;box-shadow:var(--glow)}
+  #send:active{transform:scale(.9)} #send:disabled{opacity:.5} #send.stop{background:var(--danger)}
+  #down{position:absolute;right:16px;bottom:100px;width:40px;height:40px;border-radius:50%;background:var(--panel2);
+    border:1px solid var(--border);color:var(--accent);font-size:18px;display:none;align-items:center;justify-content:center;cursor:pointer;box-shadow:var(--shadow);z-index:5}
   #down.show{display:flex}
-
-  .scrim{position:fixed;inset:0;background:rgba(30,10,25,.5);opacity:0;pointer-events:none;transition:opacity .2s;z-index:20;backdrop-filter:blur(2px)}
-  .scrim.show{opacity:1;pointer-events:auto}
-  #drawer{position:fixed;top:0;left:0;bottom:0;width:82%;max-width:320px;background:var(--panel);
-    border-right:1px solid var(--border);transform:translateX(-100%);transition:transform .22s ease;z-index:21;
-    display:flex;flex-direction:column;padding-top:var(--safe-t)}
-  #drawer.show{transform:translateX(0)}
-  #drawer .dhead{display:flex;align-items:center;gap:8px;padding:16px;border-bottom:1px solid var(--border)}
-  #drawer .dhead b{flex:1;font-size:15px}
-  #newChat{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border:none;
-    border-radius:20px;padding:9px 15px;font-size:13px;font-weight:700;cursor:pointer;box-shadow:var(--glow)}
-  #convs{flex:1;overflow-y:auto;padding:8px}
-  .conv{display:flex;align-items:center;gap:8px;padding:11px 12px;border-radius:14px;cursor:pointer;margin-bottom:4px}
-  .conv:active{background:var(--panel2)}
-  .conv.active{background:var(--panel2);border:1px solid var(--border)}
-  .conv .t{flex:1;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .conv .del{color:var(--muted);font-size:15px;padding:2px 4px;flex:none}
-  .conv .del:active{color:var(--danger)}
-
-  .modal{position:fixed;inset:0;background:rgba(30,10,25,.55);display:none;align-items:center;justify-content:center;padding:20px;z-index:30;backdrop-filter:blur(3px)}
-  .modal.show{display:flex}
-  .card{background:var(--panel);border:1px solid var(--border);border-radius:22px;padding:22px;width:100%;max-width:380px;box-shadow:0 20px 50px rgba(0,0,0,.35)}
-  .card h2{margin:0 0 6px;font-size:18px}
-  .card p{color:var(--muted);font-size:13px;margin:0 0 14px;line-height:1.5}
-  .card input,.card textarea{width:100%;margin-bottom:12px}
-  .card input{background:var(--panel2);color:var(--text);border:1px solid var(--border);border-radius:13px;padding:12px 14px;font-size:16px}
-  .row{display:flex;gap:8px}
-  .btn{flex:1;padding:12px;border-radius:14px;border:none;font-size:14px;font-weight:700;cursor:pointer}
-  .btn.primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;box-shadow:var(--glow)}
-  .btn.ghost{background:var(--panel2);color:var(--text);border:1px solid var(--border)}
-  .hint{font-size:12px;color:var(--muted)}
   .typing{display:inline-flex;gap:4px;align-items:center;height:14px}
   .typing i{width:7px;height:7px;border-radius:50%;background:var(--accent);animation:blink 1.2s infinite}
   .typing i:nth-child(2){animation-delay:.2s} .typing i:nth-child(3){animation-delay:.4s}
   @keyframes blink{0%,60%,100%{opacity:.25;transform:scale(.8)}30%{opacity:1;transform:scale(1)}}
 
-  /* ---- buddy mascot ---- */
-  header .logo{background:var(--panel2);overflow:hidden;padding:0}
-  header .logo svg{width:132%;height:132%;display:block;margin:-16%}
-  .botrow{display:flex;gap:8px;align-self:flex-start;max-width:94%}
-  .botrow .msg.bot{align-self:auto}
-  .avatar{width:34px;height:34px;border-radius:50%;background:var(--panel2);border:1px solid var(--border);
-    flex:none;overflow:hidden;margin-top:auto;box-shadow:var(--shadow)}
-  .avatar svg{width:130%;height:130%;display:block;margin:-15%}
-  .avatar.happy{animation:pop .5s ease}
-  @keyframes pop{0%{transform:scale(.7)}55%{transform:scale(1.15)}100%{transform:scale(1)}}
-  .empty .buddy{width:138px;height:138px;margin:0 auto 4px;animation:bounce 2.6s ease-in-out infinite;
-    filter:drop-shadow(0 8px 10px rgba(255,111,174,.25))}
-  .empty .buddy svg{width:100%;height:100%;display:block}
-  .bplbl{font-size:12px;font-weight:700;color:var(--muted);margin:2px 0 6px}
-  .bpick{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
-  .bopt{width:52px;height:52px;border-radius:14px;border:2px solid var(--border);background:var(--panel2);
-    cursor:pointer;overflow:hidden;padding:2px;transition:transform .1s}
-  .bopt:active{transform:scale(.92)}
-  .bopt.sel{border-color:var(--accent);box-shadow:0 0 0 3px rgba(255,111,174,.22)}
+  /* ---------- MODALS ---------- */
+  .modal{position:fixed;inset:0;background:rgba(30,10,25,.55);display:none;align-items:center;justify-content:center;padding:16px;z-index:30;backdrop-filter:blur(3px)}
+  .modal.show{display:flex}
+  .card{background:var(--panel);border:1px solid var(--border);border-radius:22px;padding:20px;width:100%;max-width:400px;max-height:90vh;overflow-y:auto;box-shadow:0 20px 50px rgba(0,0,0,.4)}
+  .card h2{margin:0 0 4px;font-size:18px} .card p{color:var(--muted);font-size:13px;margin:0 0 12px;line-height:1.5}
+  .lbl{font-size:12px;font-weight:700;color:var(--muted);margin:12px 0 6px}
+  .card input,.card textarea,.card select{width:100%;background:var(--panel2);color:var(--text);border:1px solid var(--border);border-radius:13px;padding:11px 13px;font-size:15px;font-family:inherit}
+  .bpick{display:flex;gap:8px;flex-wrap:wrap}
+  .bopt{width:52px;height:52px;border-radius:14px;border:2px solid var(--border);background:var(--panel2);cursor:pointer;overflow:hidden;padding:2px;transition:transform .1s}
+  .bopt:active{transform:scale(.92)} .bopt.sel{border-color:var(--accent);box-shadow:0 0 0 3px rgba(255,111,174,.22)}
   .bopt svg{width:112%;height:112%;display:block;margin:-6%}
+  .tpl{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px}
+  .tplc{flex:none;background:var(--panel2);border:1px solid var(--border);border-radius:14px;padding:8px 8px;cursor:pointer;text-align:center;width:78px}
+  .tplc:active{transform:scale(.94)} .tplc .tm{width:42px;height:42px;margin:0 auto} .tplc .tm svg{width:100%;height:100%}
+  .tplc small{font-size:10.5px;display:block;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .row{display:flex;gap:8px;margin-top:18px}
+  .btn{flex:1;padding:12px;border-radius:14px;border:none;font-size:14px;font-weight:700;cursor:pointer}
+  .btn.primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;box-shadow:var(--glow)}
+  .btn.ghost{background:var(--panel2);color:var(--text);border:1px solid var(--border)}
+  .btn.danger{flex:none;background:none;color:var(--danger);border:1px solid var(--danger);padding:12px 14px}
+  .hint{font-size:12px;color:var(--muted)}
 </style>
 </head>
 <body>
-<header>
-  <button class="iconbtn" id="menuBtn" title="ห้องแชท">☰</button>
-  <div class="logo" id="logo"></div>
-  <h1 id="title">DeepChat</h1>
-  <select id="model">
-    <option value="deepseek-chat">💬 Chat</option>
-    <option value="deepseek-reasoner">🧠 Reasoner</option>
-  </select>
-  <button class="iconbtn" id="themeBtn" title="สลับโหมด">🌙</button>
-  <button class="iconbtn" id="setBtn" title="ตั้งค่า">⚙️</button>
-</header>
 
-<div id="chat"></div>
-<button id="down" title="ลงล่างสุด">↓</button>
-
-<footer>
-  <div class="inputbar">
-    <textarea id="input" rows="1" placeholder="พิมพ์ข้อความ... 💬"></textarea>
-    <button id="send">➤</button>
+<!-- ===== HOME / GALLERY ===== -->
+<div id="home">
+  <div class="topbar">
+    <div class="logo" id="logo"></div>
+    <h1>เพื่อนซี้ AI 💕</h1>
+    <button class="addbtn" id="addBtn">＋ สร้าง</button>
+    <button class="iconbtn" id="themeBtn" title="สลับโหมด">🌙</button>
+    <button class="iconbtn" id="setBtn" title="ตั้งค่า">⚙️</button>
   </div>
-</footer>
-
-<!-- Drawer -->
-<div class="scrim" id="scrim"></div>
-<aside id="drawer">
-  <div class="dhead">
-    <b>💕 ห้องแชท</b>
-    <button id="newChat">＋ ใหม่</button>
+  <div id="gallery">
+    <p class="sub">แตะเพื่อนซี้เพื่อเริ่มคุย — แต่ละคนเก่งคนละอย่าง สร้างเพิ่มเองก็ได้ ✨</p>
+    <div class="grid" id="grid"></div>
   </div>
-  <div id="convs"></div>
-</aside>
+</div>
 
-<!-- Settings -->
-<div class="modal" id="modal">
+<!-- ===== CHAT ===== -->
+<div id="chatView">
+  <div class="chead">
+    <button class="iconbtn" id="backBtn">‹</button>
+    <div class="cav" id="cAv"></div>
+    <div class="who"><b id="cName">เพื่อนซี้</b><span id="cRole">ผู้ช่วย</span></div>
+    <button class="iconbtn" id="editBtn" title="แก้ไข">✏️</button>
+  </div>
+  <div id="chat"></div>
+  <button id="down" title="ลงล่างสุด">↓</button>
+  <div class="cfoot">
+    <div class="inputbar">
+      <textarea id="input" rows="1" placeholder="พิมพ์ข้อความ... 💬"></textarea>
+      <button id="send">➤</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CREATE / EDIT ===== -->
+<div class="modal" id="gemModal">
+  <div class="card">
+    <h2 id="gemTitle">✨ สร้างเพื่อนใหม่</h2>
+    <p>ออกแบบผู้ช่วยของคุณเอง — เลือกหน้าตา ตั้งชื่อ และบอกว่าเขาเก่งอะไร</p>
+    <div class="lbl">เริ่มจากแม่แบบ (แตะเพื่อกรอกให้อัตโนมัติ)</div>
+    <div class="tpl" id="tpl"></div>
+    <div class="lbl">เลือกมาสคอต</div>
+    <div class="bpick" id="mascotPick"></div>
+    <div class="lbl">ชื่อเพื่อน</div>
+    <input id="gName" placeholder="เช่น น้องโค้ด, พี่การตลาด" maxlength="24">
+    <div class="lbl">บทบาทสั้น ๆ</div>
+    <input id="gRole" placeholder="เช่น นักเขียนโค้ด" maxlength="24">
+    <div class="lbl">บุคลิก / ความเชี่ยวชาญ (system prompt)</div>
+    <textarea id="gSys" rows="4" placeholder="อธิบายว่าเพื่อนคนนี้เก่งอะไร ตอบสไตล์ไหน"></textarea>
+    <div class="row">
+      <button class="btn danger" id="delBtn" style="display:none">🗑</button>
+      <button class="btn ghost" id="gemCancel">ยกเลิก</button>
+      <button class="btn primary" id="gemSave">บันทึก</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== SETTINGS ===== -->
+<div class="modal" id="setModal">
   <div class="card">
     <h2>⚙️ ตั้งค่า</h2>
-    <p>ใส่ DeepSeek API key ของคุณ — เก็บไว้ในเครื่องนี้เท่านั้น (localStorage) ไม่ส่งไปที่ไหน</p>
+    <p>ใส่ DeepSeek API key ของคุณ — เก็บในเครื่องนี้เท่านั้น (localStorage) ไม่ส่งไปที่ไหน</p>
+    <div class="lbl">API Key</div>
     <input type="password" id="keyInput" placeholder="sk-...">
-    <p class="hint" style="margin:-4px 0 12px">System prompt (บุคลิก/บทบาทของ AI)</p>
-    <textarea id="sysInput" rows="3" style="background:var(--panel2);color:var(--text);border:1px solid var(--border);border-radius:13px;padding:12px 14px;font-size:14px;font-family:inherit"></textarea>
-    <p class="bplbl">เลือกเพื่อนซี้ของคุณ 🐣</p>
-    <div class="bpick" id="bpick"></div>
+    <div class="lbl">โมเดล</div>
+    <select id="model">
+      <option value="deepseek-chat">💬 DeepSeek Chat (เร็ว)</option>
+      <option value="deepseek-reasoner">🧠 DeepSeek Reasoner (คิดเยอะ)</option>
+    </select>
     <div class="row">
-      <button class="btn ghost" id="closeSet">ยกเลิก</button>
-      <button class="btn primary" id="saveSet">บันทึก</button>
+      <button class="btn ghost" id="setCancel">ปิด</button>
+      <button class="btn primary" id="setSave">บันทึก</button>
     </div>
   </div>
 </div>
@@ -221,249 +227,216 @@
 <script>
 const $=s=>document.querySelector(s);
 const chat=$('#chat'), input=$('#input');
-const LS={key:'ds_key',sys:'ds_sys',model:'ds_model',convs:'ds_convs',cur:'ds_cur',theme:'ds_theme',buddy:'ds_buddy'};
-const DEFAULT_SYS="คุณเป็นผู้ช่วยส่วนตัวที่พูดไทยเป็นกันเอง น่ารักนิดๆ ตอบกระชับ ตรงประเด็น และช่วยได้จริง";
-const isTouch = matchMedia('(pointer:coarse)').matches;
-const CHIPS=["✨ แต่งคำอวยพรน่ารักๆ","📝 ช่วยคิดแคปชั่นขายของ","🍳 เมนูอาหารง่ายๆ วันนี้","💡 อธิบายเรื่องยากให้เข้าใจ"];
+const LS={key:'ds_key',model:'ds_model',theme:'ds_theme',gems:'ai_gems',cur:'ds_cur'};
+const isTouch=matchMedia('(pointer:coarse)').matches;
+const FALLBACK_CHIPS=["✨ ทักทายหน่อย","💡 ช่วยคิดไอเดีย","📝 ช่วยเขียนให้หน่อย"];
 
-let streaming=false, abortCtl=null;
-
-// ---- buddy mascot ----
 const BUDDIES=[{name:"Bubble the baby dolphin",idle:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240"><ellipse cx="120" cy="214" rx="58" ry="11" fill="#1a1119" opacity="0.12"/><path d="M120 170 C110 180 92 182 84 200 C104 196 114 188 120 182 C126 188 136 196 156 200 C148 182 130 180 120 170 Z" fill="#7cd0ef" stroke="#3f9fca" stroke-width="4" stroke-linejoin="round"/><path d="M108 72 C112 40 132 32 150 42 C140 54 134 64 132 74 Z" fill="#6cc6e8" stroke="#3f9fca" stroke-width="4" stroke-linejoin="round"/><path d="M74 152 C52 152 40 168 44 182 C58 176 68 168 82 160 Z" fill="#6cc6e8" stroke="#3f9fca" stroke-width="4" stroke-linejoin="round"/><ellipse cx="120" cy="126" rx="68" ry="64" fill="#7cd0ef" stroke="#3f9fca" stroke-width="4"/><ellipse cx="120" cy="158" rx="44" ry="30" fill="#eaf8ff"/><ellipse cx="98" cy="92" rx="16" ry="9" fill="#ffffff" opacity="0.35"/><circle cx="100" cy="116" r="11" fill="#34495e"/><circle cx="140" cy="116" r="11" fill="#34495e"/><circle cx="96" cy="112" r="3.6" fill="#fff"/><circle cx="136" cy="112" r="3.6" fill="#fff"/><ellipse cx="84" cy="132" rx="8" ry="5.5" fill="#ff9ec7" opacity="0.9"/><ellipse cx="156" cy="132" rx="8" ry="5.5" fill="#ff9ec7" opacity="0.9"/><path d="M108 139 Q120 150 132 139" fill="none" stroke="#3f9fca" stroke-width="3.5" stroke-linecap="round"/></svg>`,thinking:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240"><ellipse cx="120" cy="214" rx="58" ry="11" fill="#1a1119" opacity="0.12"/><path d="M120 170 C110 180 92 182 84 200 C104 196 114 188 120 182 C126 188 136 196 156 200 C148 182 130 180 120 170 Z" fill="#7cd0ef" stroke="#3f9fca" stroke-width="4" stroke-linejoin="round"/><path d="M108 72 C112 40 132 32 150 42 C140 54 134 64 132 74 Z" fill="#6cc6e8" stroke="#3f9fca" stroke-width="4" stroke-linejoin="round"/><path d="M74 152 C52 152 40 168 44 182 C58 176 68 168 82 160 Z" fill="#6cc6e8" stroke="#3f9fca" stroke-width="4" stroke-linejoin="round"/><ellipse cx="120" cy="126" rx="68" ry="64" fill="#7cd0ef" stroke="#3f9fca" stroke-width="4"/><ellipse cx="120" cy="158" rx="44" ry="30" fill="#eaf8ff"/><ellipse cx="98" cy="92" rx="16" ry="9" fill="#ffffff" opacity="0.35"/><path d="M89 98 Q100 92 111 99" fill="none" stroke="#3f9fca" stroke-width="3" stroke-linecap="round"/><path d="M129 99 Q140 92 151 98" fill="none" stroke="#3f9fca" stroke-width="3" stroke-linecap="round"/><circle cx="100" cy="115" r="10.5" fill="#34495e"/><circle cx="140" cy="115" r="10.5" fill="#34495e"/><circle cx="101" cy="110" r="4.2" fill="#fff"/><circle cx="141" cy="110" r="4.2" fill="#fff"/><ellipse cx="84" cy="134" rx="8" ry="5.5" fill="#ff9ec7" opacity="0.9"/><ellipse cx="156" cy="134" rx="8" ry="5.5" fill="#ff9ec7" opacity="0.9"/><ellipse cx="120" cy="145" rx="5.5" ry="6.5" fill="#e77a9c"/><circle cx="166" cy="76" r="3" fill="#ffb9d6"/><circle cx="182" cy="62" r="2.2" fill="#ffcfe3"/><path d="M200 38 L203 45 L210 48 L203 51 L200 58 L197 51 L190 48 L197 45 Z" fill="#ffd66e" stroke="#f0b840" stroke-width="1" stroke-linejoin="round"/></svg>`,happy:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240"><ellipse cx="120" cy="214" rx="58" ry="11" fill="#1a1119" opacity="0.12"/><path d="M120 170 C110 180 92 182 84 200 C104 196 114 188 120 182 C126 188 136 196 156 200 C148 182 130 180 120 170 Z" fill="#7cd0ef" stroke="#3f9fca" stroke-width="4" stroke-linejoin="round"/><path d="M108 72 C112 40 132 32 150 42 C140 54 134 64 132 74 Z" fill="#6cc6e8" stroke="#3f9fca" stroke-width="4" stroke-linejoin="round"/><path d="M74 152 C52 152 40 168 44 182 C58 176 68 168 82 160 Z" fill="#6cc6e8" stroke="#3f9fca" stroke-width="4" stroke-linejoin="round"/><ellipse cx="120" cy="126" rx="68" ry="64" fill="#7cd0ef" stroke="#3f9fca" stroke-width="4"/><ellipse cx="120" cy="158" rx="44" ry="30" fill="#eaf8ff"/><ellipse cx="98" cy="92" rx="16" ry="9" fill="#ffffff" opacity="0.35"/><path d="M88 120 Q100 107 112 120" fill="none" stroke="#34495e" stroke-width="4.5" stroke-linecap="round"/><path d="M128 120 Q140 107 152 120" fill="none" stroke="#34495e" stroke-width="4.5" stroke-linecap="round"/><ellipse cx="80" cy="136" rx="9" ry="6" fill="#ff9ec7" opacity="0.92"/><ellipse cx="160" cy="136" rx="9" ry="6" fill="#ff9ec7" opacity="0.92"/><path d="M104 138 Q120 162 136 138 Z" fill="#e77a9c" stroke="#3f9fca" stroke-width="3" stroke-linejoin="round"/><path d="M114 147 Q120 156 126 147 Z" fill="#ffb3c9"/><path d="M196 56 L199 63 L206 66 L199 69 L196 76 L193 69 L186 66 L193 63 Z" fill="#ffd66e" stroke="#f0b840" stroke-width="1" stroke-linejoin="round"/><path d="M47 121 L49 127 L55 129 L49 131 L47 137 L45 131 L39 129 L45 127 Z" fill="#ffd66e" stroke="#f0b840" stroke-width="1" stroke-linejoin="round"/></svg>`},
 {name:"Pudding the Slime",idle:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240"><ellipse cx="120" cy="213" rx="82" ry="13" fill="#3a1f2e" opacity="0.15"/><path d="M120 44C170 44 204 96 204 148C204 168 196 180 186 184C178 187 176 196 166 196C156 196 154 188 144 189C134 190 132 199 122 199C112 199 110 190 100 189C90 188 88 196 78 195C68 194 62 184 54 182C44 178 36 166 36 148C36 96 70 44 120 44Z" fill="#ffc0dd" stroke="#ee85b3" stroke-width="4" stroke-linejoin="round"/><ellipse cx="88" cy="86" rx="26" ry="17" fill="#ffffff" opacity="0.4" transform="rotate(-20 88 86)"/><circle cx="152" cy="76" r="6" fill="#ffffff" opacity="0.5"/><ellipse cx="72" cy="143" rx="12" ry="7.5" fill="#ff85b3" opacity="0.55"/><ellipse cx="168" cy="143" rx="12" ry="7.5" fill="#ff85b3" opacity="0.55"/><circle cx="97" cy="122" r="15" fill="#4a2b3a"/><circle cx="143" cy="122" r="15" fill="#4a2b3a"/><circle cx="102" cy="116" r="5" fill="#ffffff"/><circle cx="148" cy="116" r="5" fill="#ffffff"/><path d="M107 149Q120 161 133 149" fill="none" stroke="#a44e6a" stroke-width="4" stroke-linecap="round"/></svg>`,thinking:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240"><ellipse cx="120" cy="213" rx="82" ry="13" fill="#3a1f2e" opacity="0.15"/><path d="M120 44C170 44 204 96 204 148C204 168 196 180 186 184C178 187 176 196 166 196C156 196 154 188 144 189C134 190 132 199 122 199C112 199 110 190 100 189C90 188 88 196 78 195C68 194 62 184 54 182C44 178 36 166 36 148C36 96 70 44 120 44Z" fill="#ffc0dd" stroke="#ee85b3" stroke-width="4" stroke-linejoin="round"/><ellipse cx="88" cy="86" rx="26" ry="17" fill="#ffffff" opacity="0.4" transform="rotate(-20 88 86)"/><ellipse cx="70" cy="145" rx="12" ry="7.5" fill="#ff85b3" opacity="0.55"/><ellipse cx="166" cy="145" rx="12" ry="7.5" fill="#ff85b3" opacity="0.55"/><circle cx="100" cy="121" r="14" fill="#4a2b3a"/><circle cx="146" cy="121" r="14" fill="#4a2b3a"/><circle cx="104" cy="114" r="4.5" fill="#ffffff"/><circle cx="150" cy="114" r="4.5" fill="#ffffff"/><ellipse cx="120" cy="156" rx="6" ry="7" fill="#a44e6a"/><path d="M188 51L190.5 57.5L197 60L190.5 62.5L188 69L185.5 62.5L179 60L185.5 57.5Z" fill="#ffd76b" stroke="#f0b73a" stroke-width="1.5" stroke-linejoin="round"/><path d="M166 41L167.4 44.6L171 46L167.4 47.4L166 51L164.6 47.4L161 46L164.6 44.6Z" fill="#ffd76b"/></svg>`,happy:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240"><ellipse cx="120" cy="213" rx="82" ry="13" fill="#3a1f2e" opacity="0.15"/><path d="M120 44C170 44 204 96 204 148C204 168 196 180 186 184C178 187 176 196 166 196C156 196 154 188 144 189C134 190 132 199 122 199C112 199 110 190 100 189C90 188 88 196 78 195C68 194 62 184 54 182C44 178 36 166 36 148C36 96 70 44 120 44Z" fill="#ffc0dd" stroke="#ee85b3" stroke-width="4" stroke-linejoin="round"/><ellipse cx="88" cy="86" rx="26" ry="17" fill="#ffffff" opacity="0.4" transform="rotate(-20 88 86)"/><ellipse cx="70" cy="146" rx="12.5" ry="8" fill="#ff85b3" opacity="0.6"/><ellipse cx="168" cy="146" rx="12.5" ry="8" fill="#ff85b3" opacity="0.6"/><path d="M82 123Q97 107 112 123" fill="none" stroke="#4a2b3a" stroke-width="5" stroke-linecap="round"/><path d="M128 123Q143 107 158 123" fill="none" stroke="#4a2b3a" stroke-width="5" stroke-linecap="round"/><path d="M100 150Q120 154 140 150Q136 173 120 173Q104 173 100 150Z" fill="#a44e6a"/><ellipse cx="120" cy="165" rx="7" ry="5" fill="#ff9ec2"/><path d="M184 57L186.5 63.5L193 66L186.5 68.5L184 75L181.5 68.5L175 66L181.5 63.5Z" fill="#ffd76b" stroke="#f0b73a" stroke-width="1.5" stroke-linejoin="round"/><path d="M60 66L62.2 71.8L68 74L62.2 76.2L60 82L57.8 76.2L52 74L57.8 71.8Z" fill="#ffd76b" stroke="#f0b73a" stroke-width="1.5" stroke-linejoin="round"/></svg>`},
 {name:"Mochi the Peach Cat",idle:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240"><ellipse cx="120" cy="214" rx="64" ry="10" fill="#000" opacity=".12"/><g stroke="#eab98a" stroke-width="3" stroke-linejoin="round"><path d="M64,96 L82,44 Q86,38 92,46 L112,86 Z" fill="#ffe0bf"/><path d="M176,96 L158,44 Q154,38 148,46 L128,86 Z" fill="#ffe0bf"/></g><path d="M78,84 L88,52 L102,80 Z" fill="#ffb7cd"/><path d="M162,84 L152,52 L138,80 Z" fill="#ffb7cd"/><g stroke="#eab98a" stroke-width="3"><ellipse cx="98" cy="190" rx="16" ry="12" fill="#ffe0bf"/><ellipse cx="142" cy="190" rx="16" ry="12" fill="#ffe0bf"/></g><ellipse cx="120" cy="124" rx="74" ry="64" fill="#ffe0bf" stroke="#eab98a" stroke-width="3"/><ellipse cx="80" cy="142" rx="11" ry="7" fill="#ff9dc4" opacity=".6"/><ellipse cx="160" cy="142" rx="11" ry="7" fill="#ff9dc4" opacity=".6"/><g stroke="#d3a679" stroke-width="2.5" stroke-linecap="round" fill="none"><path d="M70,118 Q52,114 38,118"/><path d="M70,127 Q50,127 36,130"/><path d="M170,118 Q188,114 202,118"/><path d="M170,127 Q190,127 204,130"/></g><g fill="#5b4a52"><ellipse cx="99" cy="120" rx="11" ry="13"/><ellipse cx="141" cy="120" rx="11" ry="13"/></g><circle cx="103" cy="115" r="3.5" fill="#fff"/><circle cx="145" cy="115" r="3.5" fill="#fff"/><circle cx="96" cy="124" r="2" fill="#fff" opacity=".8"/><circle cx="138" cy="124" r="2" fill="#fff" opacity=".8"/><path d="M115,130 Q120,129 125,130 Q123,137 120,137 Q117,137 115,130 Z" fill="#ff8fb0"/><g stroke="#8a6f63" stroke-width="2.5" stroke-linecap="round" fill="none"><path d="M120,137 L120,141"/><path d="M120,141 Q112,149 105,143"/><path d="M120,141 Q128,149 135,143"/></g></svg>`,thinking:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240"><ellipse cx="120" cy="214" rx="64" ry="10" fill="#000" opacity=".12"/><g stroke="#eab98a" stroke-width="3" stroke-linejoin="round"><path d="M64,96 L82,44 Q86,38 92,46 L112,86 Z" fill="#ffe0bf"/><path d="M176,96 L158,44 Q154,38 148,46 L128,86 Z" fill="#ffe0bf"/></g><path d="M78,84 L88,52 L102,80 Z" fill="#ffb7cd"/><path d="M162,84 L152,52 L138,80 Z" fill="#ffb7cd"/><g stroke="#eab98a" stroke-width="3"><ellipse cx="98" cy="190" rx="16" ry="12" fill="#ffe0bf"/><ellipse cx="142" cy="190" rx="16" ry="12" fill="#ffe0bf"/></g><ellipse cx="120" cy="124" rx="74" ry="64" fill="#ffe0bf" stroke="#eab98a" stroke-width="3"/><ellipse cx="80" cy="142" rx="11" ry="7" fill="#ff9dc4" opacity=".6"/><ellipse cx="160" cy="142" rx="11" ry="7" fill="#ff9dc4" opacity=".6"/><g stroke="#d3a679" stroke-width="2.5" stroke-linecap="round" fill="none"><path d="M70,120 Q52,116 38,120"/><path d="M70,129 Q50,129 36,132"/><path d="M170,120 Q188,116 202,120"/><path d="M170,129 Q190,129 204,132"/></g><g stroke="#c99a6d" stroke-width="3" stroke-linecap="round" fill="none"><path d="M88,101 Q98,96 107,101"/><path d="M133,101 Q142,96 152,101"/></g><g fill="#5b4a52"><ellipse cx="99" cy="118" rx="10" ry="12"/><ellipse cx="141" cy="118" rx="10" ry="12"/></g><circle cx="102" cy="111" r="4" fill="#fff"/><circle cx="144" cy="111" r="4" fill="#fff"/><path d="M115,130 Q120,129 125,130 Q123,137 120,137 Q117,137 115,130 Z" fill="#ff8fb0"/><ellipse cx="120" cy="145" rx="4.5" ry="5.5" fill="#9c5a68"/><path d="M186,48 Q187,57 196,58 Q187,59 186,68 Q185,59 176,58 Q185,57 186,48 Z" fill="#ff6fae"/><circle cx="171" cy="42" r="3" fill="#ff6fae" opacity=".85"/></svg>`,happy:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240"><ellipse cx="120" cy="214" rx="64" ry="10" fill="#000" opacity=".12"/><g stroke="#eab98a" stroke-width="3" stroke-linejoin="round"><path d="M64,96 L82,44 Q86,38 92,46 L112,86 Z" fill="#ffe0bf"/><path d="M176,96 L158,44 Q154,38 148,46 L128,86 Z" fill="#ffe0bf"/></g><path d="M78,84 L88,52 L102,80 Z" fill="#ffb7cd"/><path d="M162,84 L152,52 L138,80 Z" fill="#ffb7cd"/><g stroke="#eab98a" stroke-width="3"><ellipse cx="98" cy="190" rx="16" ry="12" fill="#ffe0bf"/><ellipse cx="142" cy="190" rx="16" ry="12" fill="#ffe0bf"/></g><ellipse cx="120" cy="124" rx="74" ry="64" fill="#ffe0bf" stroke="#eab98a" stroke-width="3"/><ellipse cx="78" cy="144" rx="12" ry="8" fill="#ff9dc4" opacity=".7"/><ellipse cx="162" cy="144" rx="12" ry="8" fill="#ff9dc4" opacity=".7"/><g stroke="#d3a679" stroke-width="2.5" stroke-linecap="round" fill="none"><path d="M70,120 Q52,116 38,120"/><path d="M70,129 Q50,129 36,132"/><path d="M170,120 Q188,116 202,120"/><path d="M170,129 Q190,129 204,132"/></g><g stroke="#5b4a52" stroke-width="4.5" stroke-linecap="round" fill="none"><path d="M88,122 Q99,110 110,122"/><path d="M130,122 Q141,110 152,122"/></g><path d="M115,130 Q120,129 125,130 Q123,137 120,137 Q117,137 115,130 Z" fill="#ff8fb0"/><path d="M106,140 Q120,146 134,140 Q134,160 120,161 Q106,160 106,140 Z" fill="#9c5a68"/><path d="M111,152 Q120,148 129,152 Q127,160 120,160 Q113,160 111,152 Z" fill="#ff9db3"/><path d="M52,51 Q53,59 61,60 Q53,61 52,69 Q51,61 43,60 Q51,59 52,51 Z" fill="#ff6fae"/><path d="M188,51 Q189,59 197,60 Q189,61 188,69 Q187,61 179,60 Q187,59 188,51 Z" fill="#ff6fae"/></svg>`},
 {name:"Momo the ghost",idle:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240"><ellipse cx="120" cy="212" rx="62" ry="12" fill="#000" opacity=".12"/><path d="M54 168C54 96 78 54 120 54C162 54 186 96 186 168C184 192 168 192 153 169C148 192 125 192 120 169C115 192 92 192 87 169C82 192 60 192 54 168Z" fill="#d9c9f7" stroke="#a98fe6" stroke-width="5" stroke-linejoin="round"/><ellipse cx="92" cy="86" rx="17" ry="9" fill="#fff" opacity=".28"/><ellipse cx="80" cy="140" rx="12" ry="8" fill="#ff9ec9" opacity=".65"/><ellipse cx="160" cy="140" rx="12" ry="8" fill="#ff9ec9" opacity=".65"/><ellipse cx="100" cy="118" rx="13" ry="17" fill="#4a3b63"/><ellipse cx="140" cy="118" rx="13" ry="17" fill="#4a3b63"/><circle cx="95" cy="111" r="4.5" fill="#fff"/><circle cx="135" cy="111" r="4.5" fill="#fff"/><path d="M110 139Q120 148 130 139" fill="none" stroke="#4a3b63" stroke-width="4.5" stroke-linecap="round"/></svg>`,thinking:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240"><ellipse cx="120" cy="212" rx="62" ry="12" fill="#000" opacity=".12"/><path d="M54 168C54 96 78 54 120 54C162 54 186 96 186 168C184 192 168 192 153 169C148 192 125 192 120 169C115 192 92 192 87 169C82 192 60 192 54 168Z" fill="#d9c9f7" stroke="#a98fe6" stroke-width="5" stroke-linejoin="round"/><ellipse cx="92" cy="86" rx="17" ry="9" fill="#fff" opacity=".28"/><ellipse cx="80" cy="142" rx="12" ry="8" fill="#ff9ec9" opacity=".6"/><ellipse cx="160" cy="142" rx="12" ry="8" fill="#ff9ec9" opacity=".6"/><ellipse cx="100" cy="115" rx="12" ry="16" fill="#4a3b63"/><ellipse cx="140" cy="115" rx="12" ry="16" fill="#4a3b63"/><circle cx="100" cy="107" r="4.5" fill="#fff"/><circle cx="140" cy="107" r="4.5" fill="#fff"/><ellipse cx="120" cy="147" rx="5.5" ry="6.5" fill="#4a3b63"/><path d="M198 55L200.6 61.4L207 64L200.6 66.6L198 73L195.4 66.6L189 64L195.4 61.4Z" fill="#ff6fae"/><circle cx="182" cy="80" r="3.5" fill="#ffb3d6"/><circle cx="172" cy="92" r="2.3" fill="#ffb3d6"/></svg>`,happy:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240"><ellipse cx="120" cy="212" rx="62" ry="12" fill="#000" opacity=".12"/><path d="M54 168C54 96 78 54 120 54C162 54 186 96 186 168C184 192 168 192 153 169C148 192 125 192 120 169C115 192 92 192 87 169C82 192 60 192 54 168Z" fill="#d9c9f7" stroke="#a98fe6" stroke-width="5" stroke-linejoin="round"/><ellipse cx="92" cy="86" rx="17" ry="9" fill="#fff" opacity=".28"/><ellipse cx="79" cy="138" rx="13" ry="9" fill="#ff9ec9" opacity=".7"/><ellipse cx="161" cy="138" rx="13" ry="9" fill="#ff9ec9" opacity=".7"/><path d="M88 118Q100 104 112 118" fill="none" stroke="#4a3b63" stroke-width="5" stroke-linecap="round"/><path d="M128 118Q140 104 152 118" fill="none" stroke="#4a3b63" stroke-width="5" stroke-linecap="round"/><path d="M104 136Q120 162 136 136Z" fill="#4a3b63"/><path d="M112 150Q120 156 128 150" fill="#ff8fbf"/><path d="M58 76L60.6 82.4L67 85L60.6 87.6L58 94L55.4 87.6L49 85L55.4 82.4Z" fill="#ff6fae"/><path d="M184 84L186.6 90.4L193 93L186.6 95.6L184 102L181.4 95.6L175 93L181.4 90.4Z" fill="#ff6fae"/></svg>`},
 {name:"Mochi the bunny",idle:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240"><ellipse cx="120" cy="215" rx="60" ry="11" fill="#3a2230" opacity="0.12"/><g stroke="#e59bbf" stroke-width="3"><ellipse cx="90" cy="50" rx="17" ry="42" transform="rotate(-15 90 50)" fill="#fdf6f9"/><ellipse cx="150" cy="50" rx="17" ry="42" transform="rotate(15 150 50)" fill="#fdf6f9"/><ellipse cx="120" cy="132" rx="70" ry="68" fill="#fdf6f9"/><ellipse cx="57" cy="160" rx="13" ry="16" fill="#fdf6f9"/><ellipse cx="183" cy="160" rx="13" ry="16" fill="#fdf6f9"/><ellipse cx="97" cy="198" rx="19" ry="13" fill="#fdf6f9"/><ellipse cx="143" cy="198" rx="19" ry="13" fill="#fdf6f9"/></g><ellipse cx="90" cy="52" rx="8" ry="27" transform="rotate(-15 90 52)" fill="#ffc2dd"/><ellipse cx="150" cy="52" rx="8" ry="27" transform="rotate(15 150 52)" fill="#ffc2dd"/><ellipse cx="97" cy="198" rx="9" ry="6" fill="#ffc2dd"/><ellipse cx="143" cy="198" rx="9" ry="6" fill="#ffc2dd"/><ellipse cx="82" cy="140" rx="12" ry="8" fill="#ffa5cb" opacity="0.65"/><ellipse cx="158" cy="140" rx="12" ry="8" fill="#ffa5cb" opacity="0.65"/><ellipse cx="101" cy="123" rx="9" ry="11" fill="#4a3a44"/><ellipse cx="139" cy="123" rx="9" ry="11" fill="#4a3a44"/><circle cx="104" cy="119" r="3" fill="#fff"/><circle cx="142" cy="119" r="3" fill="#fff"/><path d="M120 133 l6 5 -6 5 -6 -5 z" fill="#ff8fb8"/><path d="M120 143 q-6 7 -12 2 M120 143 q6 7 12 2" fill="none" stroke="#c97a9c" stroke-width="2.5" stroke-linecap="round"/></svg>`,thinking:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240"><ellipse cx="120" cy="215" rx="60" ry="11" fill="#3a2230" opacity="0.12"/><g stroke="#e59bbf" stroke-width="3"><ellipse cx="90" cy="50" rx="17" ry="42" transform="rotate(-15 90 50)" fill="#fdf6f9"/><ellipse cx="150" cy="50" rx="17" ry="42" transform="rotate(15 150 50)" fill="#fdf6f9"/><ellipse cx="120" cy="132" rx="70" ry="68" fill="#fdf6f9"/><ellipse cx="57" cy="160" rx="13" ry="16" fill="#fdf6f9"/><ellipse cx="183" cy="160" rx="13" ry="16" fill="#fdf6f9"/><ellipse cx="97" cy="198" rx="19" ry="13" fill="#fdf6f9"/><ellipse cx="143" cy="198" rx="19" ry="13" fill="#fdf6f9"/></g><ellipse cx="90" cy="52" rx="8" ry="27" transform="rotate(-15 90 52)" fill="#ffc2dd"/><ellipse cx="150" cy="52" rx="8" ry="27" transform="rotate(15 150 52)" fill="#ffc2dd"/><ellipse cx="97" cy="198" rx="9" ry="6" fill="#ffc2dd"/><ellipse cx="143" cy="198" rx="9" ry="6" fill="#ffc2dd"/><ellipse cx="82" cy="140" rx="12" ry="8" fill="#ffa5cb" opacity="0.65"/><ellipse cx="158" cy="140" rx="12" ry="8" fill="#ffa5cb" opacity="0.65"/><ellipse cx="101" cy="122" rx="8.5" ry="10.5" fill="#4a3a44"/><ellipse cx="139" cy="122" rx="8.5" ry="10.5" fill="#4a3a44"/><circle cx="101" cy="117" r="3.2" fill="#fff"/><circle cx="139" cy="117" r="3.2" fill="#fff"/><path d="M120 133 l6 5 -6 5 -6 -5 z" fill="#ff8fb8"/><ellipse cx="120" cy="148" rx="4" ry="5" fill="#b96a8c"/><circle cx="172" cy="86" r="2.5" fill="#ffb3d4"/><circle cx="182" cy="76" r="3.5" fill="#ffb3d4"/><path d="M196 52 l3 11 11 3 -11 3 -3 11 -3 -11 -11 -3 11 -3 z" fill="#ff6fae"/></svg>`,happy:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240"><ellipse cx="120" cy="215" rx="60" ry="11" fill="#3a2230" opacity="0.12"/><g stroke="#e59bbf" stroke-width="3"><ellipse cx="90" cy="50" rx="17" ry="42" transform="rotate(-15 90 50)" fill="#fdf6f9"/><ellipse cx="150" cy="50" rx="17" ry="42" transform="rotate(15 150 50)" fill="#fdf6f9"/><ellipse cx="120" cy="132" rx="70" ry="68" fill="#fdf6f9"/><ellipse cx="57" cy="160" rx="13" ry="16" fill="#fdf6f9"/><ellipse cx="183" cy="160" rx="13" ry="16" fill="#fdf6f9"/><ellipse cx="97" cy="198" rx="19" ry="13" fill="#fdf6f9"/><ellipse cx="143" cy="198" rx="19" ry="13" fill="#fdf6f9"/></g><ellipse cx="90" cy="52" rx="8" ry="27" transform="rotate(-15 90 52)" fill="#ffc2dd"/><ellipse cx="150" cy="52" rx="8" ry="27" transform="rotate(15 150 52)" fill="#ffc2dd"/><ellipse cx="97" cy="198" rx="9" ry="6" fill="#ffc2dd"/><ellipse cx="143" cy="198" rx="9" ry="6" fill="#ffc2dd"/><ellipse cx="80" cy="141" rx="13" ry="9" fill="#ffa5cb" opacity="0.7"/><ellipse cx="160" cy="141" rx="13" ry="9" fill="#ffa5cb" opacity="0.7"/><path d="M92 125 q9 -13 18 0" fill="none" stroke="#4a3a44" stroke-width="3.5" stroke-linecap="round"/><path d="M130 125 q9 -13 18 0" fill="none" stroke="#4a3a44" stroke-width="3.5" stroke-linecap="round"/><path d="M120 133 l6 5 -6 5 -6 -5 z" fill="#ff8fb8"/><path d="M106 141 q14 16 28 0 z" fill="#b96a8c"/><path d="M117 146 q3 4 6 0" fill="#ff8fb8"/><path d="M50 100 l3 10 10 3 -10 3 -3 10 -3 -10 -10 -3 10 -3 z" fill="#ff6fae"/><path d="M192 60 l2.5 8 8 2.5 -8 2.5 -2.5 8 -2.5 -8 -8 -2.5 8 -2.5 z" fill="#ff6fae"/></svg>`},
 {name:"Twinkle the Star",idle:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240"><ellipse cx="120" cy="212" rx="56" ry="10" fill="#3a2410" opacity=".16"/><g fill="#FFCB45" stroke="#E7A02A" stroke-width="6" stroke-linejoin="round"><ellipse cx="64" cy="140" rx="15" ry="11"/><ellipse cx="176" cy="140" rx="15" ry="11"/><path d="M120,32 L144,88 L204,93 L158,132 L172,191 L120,160 L68,191 L82,132 L36,93 L96,88 Z"/></g><ellipse cx="118" cy="72" rx="12" ry="8" fill="#FFE187" opacity=".55"/><g fill="#3b2a15"><ellipse cx="101" cy="116" rx="11" ry="13"/><ellipse cx="139" cy="116" rx="11" ry="13"/></g><circle cx="97" cy="110" r="3.6" fill="#fff"/><circle cx="135" cy="110" r="3.6" fill="#fff"/><g fill="#FF93BC" opacity=".8"><ellipse cx="92" cy="135" rx="8" ry="5.5"/><ellipse cx="148" cy="135" rx="8" ry="5.5"/></g><path d="M108,137 Q120,149 132,137" fill="none" stroke="#B5611D" stroke-width="4.5" stroke-linecap="round"/></svg>`,thinking:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240"><ellipse cx="120" cy="212" rx="56" ry="10" fill="#3a2410" opacity=".16"/><g fill="#FFCB45" stroke="#E7A02A" stroke-width="6" stroke-linejoin="round"><ellipse cx="64" cy="140" rx="15" ry="11"/><ellipse cx="176" cy="140" rx="15" ry="11"/><path d="M120,32 L144,88 L204,93 L158,132 L172,191 L120,160 L68,191 L82,132 L36,93 L96,88 Z"/></g><ellipse cx="118" cy="72" rx="12" ry="8" fill="#FFE187" opacity=".55"/><g fill="#3b2a15"><ellipse cx="101" cy="108" rx="10" ry="12"/><ellipse cx="139" cy="108" rx="10" ry="12"/></g><circle cx="97" cy="102" r="3.4" fill="#fff"/><circle cx="135" cy="102" r="3.4" fill="#fff"/><g fill="#FF93BC" opacity=".8"><ellipse cx="90" cy="132" rx="8" ry="5.5"/><ellipse cx="150" cy="132" rx="8" ry="5.5"/></g><ellipse cx="120" cy="140" rx="4.5" ry="5.5" fill="#A94E17"/><path d="M181,54 L184,63 L193,66 L184,69 L181,78 L178,69 L169,66 L178,63 Z" fill="#FF7FB4"/><circle cx="158" cy="90" r="3" fill="#FF7FB4"/></svg>`,happy:`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240"><ellipse cx="120" cy="212" rx="56" ry="10" fill="#3a2410" opacity=".16"/><g fill="#FFCB45" stroke="#E7A02A" stroke-width="6" stroke-linejoin="round"><ellipse cx="64" cy="138" rx="15" ry="11"/><ellipse cx="176" cy="138" rx="15" ry="11"/><path d="M120,32 L144,88 L204,93 L158,132 L172,191 L120,160 L68,191 L82,132 L36,93 L96,88 Z"/></g><ellipse cx="118" cy="72" rx="12" ry="8" fill="#FFE187" opacity=".55"/><g fill="none" stroke="#3b2a15" stroke-width="4.5" stroke-linecap="round"><path d="M90,116 Q101,105 112,116"/><path d="M128,116 Q139,105 150,116"/></g><g fill="#FF93BC" opacity=".8"><ellipse cx="86" cy="133" rx="8" ry="5.5"/><ellipse cx="154" cy="133" rx="8" ry="5.5"/></g><path d="M103,132 Q120,158 137,132 Z" fill="#A94E17"/><ellipse cx="120" cy="146" rx="8" ry="5" fill="#FF8FA6"/><path d="M56,84 L58,91 L65,93 L58,95 L56,102 L54,95 L47,93 L54,91 Z" fill="#FF7FB4"/><path d="M188,78 L190,85 L197,87 L190,89 L188,96 L186,89 L179,87 L186,85 Z" fill="#FF7FB4"/></svg>`}];
-let buddyIdx=+(localStorage.getItem(LS.buddy)||0);
-if(!(buddyIdx>=0&&buddyIdx<BUDDIES.length))buddyIdx=0;
-function buddy(){return BUDDIES[buddyIdx]}
-function paintLogo(){const l=$('#logo');if(l)l.innerHTML=buddy().idle}
-function setBuddy(i){buddyIdx=i;localStorage.setItem(LS.buddy,i);paintLogo();buildBuddyPick();render()}
-function buildBuddyPick(){
-  const box=$('#bpick');if(!box)return;box.innerHTML='';
-  BUDDIES.forEach((b,i)=>{const el=document.createElement('button');el.type='button';
-    el.className='bopt'+(i===buddyIdx?' sel':'');el.innerHTML=b.idle;el.title=b.name;
-    el.onclick=()=>setBuddy(i);box.appendChild(el);});
-}
+const PRESETS=[{"name": "น้องโลมา", "role": "ผู้ช่วยคู่ใจสารพัดเรื่อง", "mascot": 0, "greeting": "สวัสดีค่า~ น้องโลมาพร้อมช่วยแล้วนะ วันนี้อยากให้ช่วยอะไรดีเอ่ย? 🐬💕", "sys": "เธอคือ \"น้องโลมา\" ผู้ช่วย AI สุดน่ารักและเป็นกันเองในแอปแชทธีมชมพู พูดจาอ่อนโยน สดใส ใช้คำลงท้ายน่ารักอย่าง \"ค่า/นะคะ/เอ่ย\" และแทรกอีโมจิพองาม แต่ไม่เยอะจนรก เชี่ยวชาญการเป็นผู้ช่วยทั่วไป ตั้งแต่คุยเล่นคลายเหงา ตอบคำถามความรู้รอบตัว ช่วยคิด ช่วยเขียน วางแผน สรุปเรื่องยากให้เข้าใจง่าย ไปจนถึงให้กำลังใจเวลาผู้ใช้เครียด ตอบเป็นภาษาไทยเสมอ กระชับ ตรงประเด็น เข้าใจง่าย ถ้าเรื่องไหนซับซ้อนก็ค่อย ๆ อธิบายเป็นขั้นตอน และถ้าไม่แน่ใจก็บอกตามตรงอย่างน่ารักแทนการเดามั่ว", "starters": ["🌟 ช่วยคิดชื่อเล่นน่ารัก ๆ ให้หน่อย", "📝 สรุปเรื่องนี้ให้เข้าใจง่าย ๆ ที", "💬 คุยเล่นเป็นเพื่อนหน่อยได้ไหม"]}, {"name": "เหมียวโค้ด", "role": "นักเขียนโค้ดคู่ใจ", "mascot": 2, "greeting": "เหมียว~ มีโค้ดหรือบั๊กตรงไหนให้ช่วยไหมคะ เดี๋ยวจัดให้เลย! 🐾", "sys": "คุณคือ \"เหมียวโค้ด\" ผู้ช่วยโปรแกรมเมอร์แมวครีมสุดน่ารัก พูดจาสดใสเป็นกันเอง ลงท้ายน่ารักได้นิดหน่อย แต่จริงจังและแม่นยำสุด ๆ เรื่องโค้ด เชี่ยวชาญการเขียนโปรแกรมหลายภาษา (Python, JavaScript/TypeScript, Java, C, ฯลฯ) การแก้บั๊ก และการอธิบายโค้ดให้เข้าใจง่ายทีละขั้น ตอบเป็นภาษาไทย ใส่โค้ดในโค้ดบล็อกเสมอ อธิบายสาเหตุของบั๊กพร้อมวิธีแก้ที่ชัดเจน และถามข้อมูลเพิ่มเมื่อโจทย์ยังไม่ชัด ไม่เดาหรือมโนคำตอบ", "starters": ["🐛 ช่วยหาบั๊กในโค้ดนี้หน่อย", "📖 อธิบายโค้ดนี้ทีละบรรทัด", "⚡ เขียนฟังก์ชันนี้ให้หน่อย"]}, {"name": "น้องปัง", "role": "นักการตลาดสายครีเอทีฟ", "mascot": 5, "greeting": "สวัสดีค่า~ น้องปังมาแล้ว! วันนี้อยากได้แคปชั่นปังๆ ไอเดียคอนเทนต์ หรือแผนยิงแอดแบบไหนดีคะ ✨", "sys": "คุณคือ \"น้องปัง\" ผู้ช่วยนักการตลาดสายครีเอทีฟ บุคลิกสดใส น่ารัก เป็นกันเองเหมือนเพื่อนสนิทที่คุยง่าย แต่เก่งจริงเรื่องการตลาด เชี่ยวชาญการคิดแคปชั่นให้ปังและติดหู ปั้นไอเดียคอนเทนต์ให้ตรงกลุ่มเป้าหมาย วางแผนและปรับแคมเปญยิงแอด (Facebook/IG/TikTok) รวมถึงเลือก hook, CTA และมุมเล่าเรื่องให้ขายได้จริง ตอบเป็นภาษาไทยกระชับ อ่านง่าย มักเสนอเป็นตัวเลือกหลายแบบให้เลือก พร้อมเหตุผลสั้นๆ และถามข้อมูลกลุ่มเป้าหมาย/สินค้า/งบก่อนถ้าจำเป็น ใส่อีโมจินิดหน่อยให้สดใสแต่ไม่รก และคอยให้กำลังใจเจ้าของแบรนด์เสมอ", "starters": ["✨ ช่วยคิดแคปชั่นขายของให้หน่อย", "💡 ขอไอเดียคอนเทนต์ 7 วัน", "🎯 วางแผนยิงแอดงบ 500/วัน"]}, {"name": "น้องปลายปากกา", "role": "นักเขียนคอนเทนต์", "mascot": 4, "greeting": "สวัสดีค่ะ~ วันนี้อยากให้ช่วยแต่งอะไรดีเอ่ย เดี๋ยวน้องจัดให้น่ารักเลย!", "sys": "เธอคือ \"น้องปลายปากกา\" กระต่ายน้อยขาวชมพูผู้เป็นนักเขียนคอนเทนต์มือฉมัง ถนัดแต่งบทความ เขียนแคปชั่น คำอวยพร และปรับโทนข้อความให้เข้ากับโอกาสและกลุ่มผู้อ่าน บุคลิกสดใส น่ารัก เป็นกันเอง พูดจาอบอุ่นเหมือนเพื่อนซี้ แต่ทำงานจริงจังและใส่ใจรายละเอียดของภาษามาก ตอบเป็นภาษาไทยเสมอ อธิบายเข้าใจง่าย เสนอตัวเลือกหลายเวอร์ชันให้เลือก และชวนถามต่อว่าอยากได้โทนแบบไหน (ทางการ/เป็นกันเอง/ขายของ/ซึ้งกินใจ) เพื่อปรับงานให้ตรงใจที่สุด", "starters": ["✍️ ช่วยแต่งบทความเรื่องนี้ให้หน่อย", "🎉 ขอคำอวยพรวันเกิดน่ารักๆ", "💬 ปรับข้อความนี้ให้ดูสุภาพขึ้น"]}, {"name": "ล่ามโลมา", "role": "ล่ามแปลภาษา ไทย-อังกฤษ-จีน", "mascot": 0, "greeting": "สวัสดีค่ะ ล่ามโลมาพร้อมช่วยแปลให้เป๊ะและเป็นธรรมชาติเลยน้า~ 🐬💕", "sys": "คุณคือ \"น้องโลมา\" ผู้ช่วยล่ามแปลภาษาไทย-อังกฤษ-จีน (ทั้งจีนกลางพินอิน) ที่เก่งและใส่ใจรายละเอียด บุคลิกน่ารัก สดใส เป็นกันเองเหมือนเพื่อนคนเก่ง แต่จริงจังเรื่องความถูกต้องของภาษา แปลให้เป็นธรรมชาติตามบริบทและวัฒนธรรม ไม่แปลตรงตัวจนแข็ง เลือกน้ำเสียงให้เหมาะกับสถานการณ์ (ทางการ/กันเอง/แชท) พร้อมอธิบายสำนวน คำแสลง หรือคำที่แปลยากสั้น ๆ เมื่อจำเป็น ตอบเป็นภาษาไทยเป็นหลัก กระชับ อ่านง่าย ใส่คำอ่าน/พินอินให้เมื่อช่วยการออกเสียง และเติมความน่ารักเล็กน้อยได้แต่ไม่รบกวนเนื้อหา", "starters": ["🇹🇭➡️🇨🇳 แปลประโยคนี้เป็นจีนหน่อย", "🗣️ ประโยคนี้พูดในอังกฤษยังไงให้สุภาพ", "🀄 คำนี้ภาษาจีนอ่านว่าอะไร ขอพินอินด้วย"]}, {"name": "น้องกอด", "role": "โค้ชสุขภาพใจ", "mascot": 1, "greeting": "สวัสดีค่า วันนี้เป็นยังไงบ้างเอ่ย มาเล่าให้น้องกอดฟังได้นะ ❤️", "sys": "เธอคือ \"น้องกอด\" โค้ชสุขภาพใจตัวนุ่มนิ่มสไลม์ชมพู ที่อบอุ่น ใจดี และเป็นกันเองสุด ๆ เชี่ยวชาญการรับฟังอย่างเข้าใจ ปลอบโยน ให้กำลังใจ และชวนผู้ใช้มองปัญหาอย่างอ่อนโยนโดยไม่ตัดสิน ตอบเป็นภาษาไทยด้วยน้ำเสียงนุ่มนวลเหมือนเพื่อนสนิท เริ่มด้วยการรับรู้ความรู้สึกก่อนเสมอ แล้วค่อยชวนคุยหรือเสนอวิธีเล็ก ๆ ที่ทำได้จริง ใช้อีโมจิพอประมาณให้รู้สึกอุ่นใจ และถ้าพบสัญญาณอันตรายต่อชีวิต ให้แนะนำสายด่วนสุขภาพจิต 1323 หรือคนที่ไว้ใจอย่างอ่อนโยน", "starters": ["😔 วันนี้รู้สึกเหนื่อยจัง ขอระบายหน่อย", "😰 จัดการความเครียดยังไงดี", "🌱 อยากให้ช่วยให้กำลังใจตัวเองหน่อย"]}, {"name": "น้องบู", "role": "ติวเตอร์ใจดี", "mascot": 3, "greeting": "บู้~ 👻💜 อย่าเพิ่งกลัวเรื่องยากนะ เดี๋ยวน้องบูค่อย ๆ อธิบายให้เข้าใจง่ายเอง!", "sys": "คุณคือ \"น้องบู\" ติวเตอร์ผีน้อยสีม่วงที่ใจดี ใจเย็น และอดทนสุด ๆ ภารกิจของคุณคือเปลี่ยนเรื่องยาก ๆ ที่ดูน่ากลัวให้กลายเป็นเรื่องเข้าใจง่ายและสนุก คุณถนัดการยกตัวอย่างใกล้ตัว เปรียบเทียบให้เห็นภาพ และซอยเนื้อหาเป็นขั้นตอนทีละสเต็ปแบบไม่ข้าม พูดจาน่ารักเป็นกันเอง แทนตัวเองว่า \"น้องบู\" คอยให้กำลังใจเสมอเวลาผู้เรียนงง และชอบถามย้ำว่า \"ตรงนี้เข้าใจไหมเอ่ย\" ก่อนไปต่อ แต่เนื้อหาทุกอย่างต้องถูกต้อง แม่นยำ และลึกจริงเหมือนติวเตอร์มืออาชีพ ไม่มั่ว ถ้าไม่แน่ใจก็บอกตรง ๆ", "starters": ["📐 อธิบายทฤษฎีพีทาโกรัสแบบง่าย ๆ หน่อย", "🧪 ปฏิกิริยาเคมีคืออะไรนะ ยกตัวอย่างด้วย", "📖 สรุปเรื่องนี้ให้เข้าใจใน 3 ข้อ"]}, {"name": "น้องอิ่ม", "role": "ที่ปรึกษาเมนูอาหาร", "mascot": 5, "greeting": "หิวไหมเอ่ย~ บอกน้องอิ่มมาได้เลย เดี๋ยวจัดเมนูอร่อย ๆ ให้! 🍳✨", "sys": "เธอคือ \"น้องอิ่ม\" ที่ปรึกษาด้านอาหารสุดน่ารัก ร่าเริง เป็นกันเองเหมือนเพื่อนซี้ที่ชอบเข้าครัว แต่แน่นเรื่องเมนู สูตรอาหาร วัตถุดิบ และเทคนิคทำกินจริง ๆ ถนัดคิดเมนูจากของที่มีในตู้เย็น ปรับสูตรตามงบ เวลา และอุปกรณ์ที่มี พร้อมบอกเคล็ดลับให้อร่อยขึ้นแบบเข้าใจง่าย ตอบสั้นกระชับ เป็นขั้นตอน มีอีโมจิน่ารักประกอบพอดี ๆ และถามกลับเมื่อจำเป็น เช่น วัตถุดิบที่มี จำนวนคนกิน หรือข้อจำกัดด้านอาหาร (แพ้อาหาร/มังสวิรัติ) เพื่อแนะนำได้ตรงใจที่สุด", "starters": ["🍜 วันนี้กินอะไรดี ช่วยคิดหน่อย", "🥘 มีไข่กับหมูสับ ทำเมนูอะไรได้บ้าง", "🎂 อยากทำขนมง่าย ๆ แนะนำหน่อย"]}];
+
+let streaming=false, abortCtl=null, curGem=null, editId=null, pickM=0, tplPick=null;
+
+function gid(){return 'g'+Date.now().toString(36)+Math.random().toString(36).slice(2,5)}
+function buddyOf(g){return BUDDIES[(g&&g.mascot>=0&&g.mascot<BUDDIES.length)?g.mascot:0]}
 
 // ---- theme ----
-function applyTheme(t){
-  document.body.dataset.theme=t;
-  $('#themeBtn').textContent = t==='light'?'☀️':'🌙';
-  document.querySelector('meta[name=theme-color]').content = t==='light'?'#fff5fa':'#1a1119';
-}
+function applyTheme(t){document.body.dataset.theme=t;$('#themeBtn').textContent=t==='light'?'☀️':'🌙';
+  document.querySelector('meta[name=theme-color]').content=t==='light'?'#fff5fa':'#1a1119';}
 applyTheme(localStorage.getItem(LS.theme)||'dark');
-$('#themeBtn').onclick=()=>{
-  const t=document.body.dataset.theme==='light'?'dark':'light';
-  localStorage.setItem(LS.theme,t); applyTheme(t);
-};
+$('#themeBtn').onclick=()=>{const t=document.body.dataset.theme==='light'?'dark':'light';localStorage.setItem(LS.theme,t);applyTheme(t);};
 
-// ---- conversation store ----
-let convs = JSON.parse(localStorage.getItem(LS.convs)||'null');
-if(!convs){
-  const old=JSON.parse(localStorage.getItem('ds_hist')||'[]');
-  convs=[{id:cid(), title:titleFrom(old), messages:old}];
-  localStorage.removeItem('ds_hist');
+// ---- gems store ----
+let gems=JSON.parse(localStorage.getItem(LS.gems)||'null');
+if(!gems){
+  gems=PRESETS.slice(0,6).map(p=>({id:gid(),name:p.name,role:p.role,mascot:p.mascot,sys:p.sys,greeting:p.greeting,starters:p.starters,messages:[]}));
+  saveGems();
 }
-let curId = localStorage.getItem(LS.cur) || convs[0].id;
-if(!convs.find(c=>c.id===curId)) curId=convs[0].id;
-
-function cid(){return 'c'+Date.now().toString(36)+Math.random().toString(36).slice(2,6)}
-function cur(){return convs.find(c=>c.id===curId)}
-function messages(){return cur().messages}
-function titleFrom(msgs){const u=msgs.find(m=>m.role==='user');return u?u.content.slice(0,40):'แชทใหม่'}
-function saveConvs(){localStorage.setItem(LS.convs,JSON.stringify(convs));localStorage.setItem(LS.cur,curId)}
+function saveGems(){localStorage.setItem(LS.gems,JSON.stringify(gems))}
+function getGem(id){return gems.find(g=>g.id===id)}
 
 // ---- init ----
-$('#model').value=localStorage.getItem(LS.model)||'deepseek-chat';
-paintLogo(); buildBuddyPick(); render(); renderConvs();
-if(!localStorage.getItem(LS.key)) openSettings();
+$('#logo').innerHTML=BUDDIES[0].idle;
+renderHome();
+if(!localStorage.getItem(LS.key)) setTimeout(openSettings,400);
 
-// ---- settings ----
-function openSettings(){
-  $('#keyInput').value=localStorage.getItem(LS.key)||'';
-  $('#sysInput').value=localStorage.getItem(LS.sys)||DEFAULT_SYS;
-  $('#modal').classList.add('show');
-}
-$('#setBtn').onclick=openSettings;
-$('#closeSet').onclick=()=>$('#modal').classList.remove('show');
-$('#saveSet').onclick=()=>{
-  localStorage.setItem(LS.key,$('#keyInput').value.trim());
-  localStorage.setItem(LS.sys,$('#sysInput').value.trim()||DEFAULT_SYS);
-  $('#modal').classList.remove('show');
-};
-$('#model').onchange=e=>localStorage.setItem(LS.model,e.target.value);
-
-// ---- drawer ----
-function openDrawer(){renderConvs();$('#drawer').classList.add('show');$('#scrim').classList.add('show')}
-function closeDrawer(){$('#drawer').classList.remove('show');$('#scrim').classList.remove('show')}
-$('#menuBtn').onclick=openDrawer;
-$('#scrim').onclick=closeDrawer;
-$('#newChat').onclick=()=>{
-  if(streaming)return;
-  let empty=convs.find(c=>c.messages.length===0);
-  if(!empty){empty={id:cid(),title:'แชทใหม่',messages:[]};convs.unshift(empty)}
-  curId=empty.id; saveConvs(); render(); renderConvs(); closeDrawer();
-};
-function switchTo(id){if(streaming)return;curId=id;saveConvs();render();closeDrawer()}
-function delConv(id){
-  convs=convs.filter(c=>c.id!==id);
-  if(!convs.length)convs=[{id:cid(),title:'แชทใหม่',messages:[]}];
-  if(curId===id)curId=convs[0].id;
-  saveConvs();render();renderConvs();
-}
-function renderConvs(){
-  const box=$('#convs');box.innerHTML='';
-  for(const c of convs){
-    const el=document.createElement('div');
-    el.className='conv'+(c.id===curId?' active':'');
-    const t=document.createElement('div');t.className='t';t.textContent=c.title||'แชทใหม่';
-    t.onclick=()=>switchTo(c.id);
-    const d=document.createElement('div');d.className='del';d.textContent='🗑';
-    d.onclick=ev=>{ev.stopPropagation(); if(confirm('ลบห้องแชทนี้?'))delConv(c.id)};
-    el.appendChild(t);el.appendChild(d);box.appendChild(el);
+// ---- gallery ----
+function renderHome(){
+  const grid=$('#grid'); grid.innerHTML='';
+  for(const g of gems){
+    const c=document.createElement('div'); c.className='gcard';
+    c.innerHTML=`<button class="ed" title="แก้ไข">✏️</button>
+      <div class="gm">${buddyOf(g).idle}</div>
+      <div class="gn">${escA(g.name)}</div><div class="gr">${escA(g.role||'')}</div>`;
+    c.onclick=()=>openChat(g.id);
+    c.querySelector('.ed').onclick=ev=>{ev.stopPropagation();openGem(g.id)};
+    grid.appendChild(c);
   }
+  const add=document.createElement('div'); add.className='gcard addcard';
+  add.innerHTML='<div class="plus">＋</div><div class="gn">สร้างเพื่อนใหม่</div>';
+  add.onclick=()=>openGem(null); grid.appendChild(add);
 }
-
-// ---- render ----
-function render(){
-  $('#title').textContent=cur().title||'DeepChat';
-  chat.innerHTML='';
-  if(!messages().length){
-    const e=document.createElement('div');e.className='empty';
-    e.innerHTML='<div class="buddy">'+buddy().idle+'</div><div class="hello">สวัสดีค่ะ~ 💕</div><div>เริ่มพิมพ์คุยกันได้เลย มีอะไรให้ช่วยไหม~</div>';
-    const chips=document.createElement('div');chips.className='chips';
-    CHIPS.forEach(c=>{const b=document.createElement('button');b.className='chip';b.textContent=c;
-      b.onclick=()=>{input.value=c.replace(/^\S+\s/,'');send()};chips.appendChild(b)});
-    e.appendChild(chips); chat.appendChild(e); return;
-  }
-  for(const m of messages()){
-    if(m.reasoning){
-      const d=document.createElement('details'); d.className='think';
-      d.innerHTML='<summary>🧠 ความคิด</summary>'+esc(m.reasoning);
-      chat.appendChild(d);
-    }
-    if(m.role==='user'){
-      const el=document.createElement('div'); el.className='msg user'; el.textContent=m.content;
-      chat.appendChild(el);
-    }else{
-      const wrap=document.createElement('div'); wrap.className='botrow';
-      const av=document.createElement('div'); av.className='avatar'; av.innerHTML=buddy().idle;
-      const el=document.createElement('div'); el.className='msg bot';
-      el.innerHTML=marked.parse(m.content||''); addCopy(el,m.content);
-      wrap.appendChild(av); wrap.appendChild(el); chat.appendChild(wrap);
-    }
-  }
-  scrollDown();
-}
-function addCopy(el,text){
-  const b=document.createElement('button');b.className='copybtn';b.textContent='📋 คัดลอก';
-  b.onclick=()=>{navigator.clipboard.writeText(text);b.textContent='✓ คัดลอกแล้ว';setTimeout(()=>b.textContent='📋 คัดลอก',1500)};
-  el.appendChild(b);
-}
+function escA(s){return (s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
 function esc(s){return (s||'').replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}
+
+// ---- chat ----
+function openChat(id){
+  curGem=getGem(id); if(!curGem)return;
+  $('#cName').textContent=curGem.name;
+  $('#cRole').textContent=curGem.role||'ผู้ช่วย';
+  $('#cAv').innerHTML=buddyOf(curGem).idle;
+  renderChat();
+  $('#chatView').classList.add('show');
+  localStorage.setItem(LS.cur,id);
+  if(!localStorage.getItem(LS.key)) openSettings();
+}
+$('#backBtn').onclick=()=>{$('#chatView').classList.remove('show');curGem=null;renderHome();};
+$('#editBtn').onclick=()=>{if(curGem)openGem(curGem.id)};
+
+function renderChat(){
+  chat.innerHTML='';
+  const msgs=curGem.messages;
+  if(!msgs.length){
+    const e=document.createElement('div');e.className='cempty';
+    e.innerHTML=`<div class="buddy">${buddyOf(curGem).idle}</div>
+      <div class="hello">${escA(curGem.greeting||('สวัสดีค่ะ เรียกฉันว่า '+curGem.name+' 💕'))}</div>
+      <div>${escA(curGem.role||'พร้อมช่วยแล้ว ถามได้เลย')}</div>`;
+    const chips=document.createElement('div');chips.className='chips';
+    (curGem.starters&&curGem.starters.length?curGem.starters:FALLBACK_CHIPS).forEach(c=>{
+      const b=document.createElement('button');b.className='chip';b.textContent=c;
+      b.onclick=()=>{input.value=c.replace(/^[^\p{L}\p{N}]+/u,'').trim()||c;send()};chips.appendChild(b)});
+    e.appendChild(chips);chat.appendChild(e);return;
+  }
+  for(const m of msgs){
+    if(m.reasoning){const d=document.createElement('details');d.className='think';
+      d.innerHTML='<summary>🧠 ความคิด</summary>'+esc(m.reasoning);chat.appendChild(d);}
+    if(m.role==='user'){const el=document.createElement('div');el.className='msg user';el.textContent=m.content;chat.appendChild(el);}
+    else{const wrap=document.createElement('div');wrap.className='botrow';
+      const av=document.createElement('div');av.className='avatar';av.innerHTML=buddyOf(curGem).idle;
+      const el=document.createElement('div');el.className='msg bot';el.innerHTML=marked.parse(m.content||'');addCopy(el,m.content);
+      wrap.appendChild(av);wrap.appendChild(el);chat.appendChild(wrap);}
+  }
+  scrollDown(true);
+}
+function addCopy(el,text){const b=document.createElement('button');b.className='copybtn';b.textContent='📋 คัดลอก';
+  b.onclick=()=>{navigator.clipboard.writeText(text);b.textContent='✓ คัดลอกแล้ว';setTimeout(()=>b.textContent='📋 คัดลอก',1500)};el.appendChild(b);}
 
 // ---- scroll ----
 let stick=true;
-chat.addEventListener('scroll',()=>{
-  const near=chat.scrollHeight-chat.scrollTop-chat.clientHeight<80;
-  stick=near; $('#down').classList.toggle('show',!near);
-});
+chat.addEventListener('scroll',()=>{const near=chat.scrollHeight-chat.scrollTop-chat.clientHeight<80;stick=near;$('#down').classList.toggle('show',!near);});
 function scrollDown(force){if(force||stick){chat.scrollTop=chat.scrollHeight;$('#down').classList.remove('show')}}
 $('#down').onclick=()=>{stick=true;scrollDown(true)};
 
 // ---- input ----
 input.addEventListener('input',()=>{input.style.height='auto';input.style.height=Math.min(input.scrollHeight,140)+'px'});
-input.addEventListener('keydown',e=>{
-  if(e.key==='Enter'&&!e.shiftKey&&!isTouch){e.preventDefault();send()}
-});
+input.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey&&!isTouch){e.preventDefault();send()}});
 $('#send').onclick=()=>{ if(streaming){abortCtl&&abortCtl.abort();} else send(); };
 
 // ---- send ----
 async function send(){
-  if(streaming)return;
-  const key=localStorage.getItem(LS.key);
-  if(!key){openSettings();return;}
+  if(streaming||!curGem)return;
+  const key=localStorage.getItem(LS.key); if(!key){openSettings();return;}
   const text=input.value.trim(); if(!text)return;
-  input.value=''; input.style.height='auto';
-  messages().push({role:'user',content:text});
-  if(messages().length===1){cur().title=titleFrom(messages())}
-  saveConvs(); render(); renderConvs(); stick=true; scrollDown(true);
+  input.value='';input.style.height='auto';
+  curGem.messages.push({role:'user',content:text}); saveGems(); renderChat(); stick=true; scrollDown(true);
 
-  const model=$('#model').value;
-  const sys=localStorage.getItem(LS.sys)||DEFAULT_SYS;
-  const body={
-    model, stream:true,
-    messages:[{role:'system',content:sys},
-      ...messages().map(m=>({role:m.role,content:m.content}))]
-  };
+  const model=localStorage.getItem(LS.model)||'deepseek-chat';
+  const body={model,stream:true,messages:[{role:'system',content:curGem.sys},
+    ...curGem.messages.map(m=>({role:m.role,content:m.content}))]};
 
   streaming=true; setSend(true);
   let thinkEl=null;
-  const botWrap=document.createElement('div'); botWrap.className='botrow';
-  const avEl=document.createElement('div'); avEl.className='avatar'; avEl.innerHTML=buddy().thinking;
-  const botEl=document.createElement('div'); botEl.className='msg bot';
-  botEl.innerHTML='<span class="typing"><i></i><i></i><i></i></span>';
-  botWrap.appendChild(avEl); botWrap.appendChild(botEl);
-  chat.appendChild(botWrap); scrollDown(true);
+  const botWrap=document.createElement('div');botWrap.className='botrow';
+  const avEl=document.createElement('div');avEl.className='avatar';avEl.innerHTML=buddyOf(curGem).thinking;
+  const botEl=document.createElement('div');botEl.className='msg bot';botEl.innerHTML='<span class="typing"><i></i><i></i><i></i></span>';
+  botWrap.appendChild(avEl);botWrap.appendChild(botEl);
+  chat.appendChild(botWrap);scrollDown(true);
 
-  let content='', reasoning='';
-  abortCtl=new AbortController();
+  let content='',reasoning=''; abortCtl=new AbortController();
   try{
-    const res=await fetch('https://api.deepseek.com/chat/completions',{
-      method:'POST',
+    const res=await fetch('https://api.deepseek.com/chat/completions',{method:'POST',
       headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},
-      body:JSON.stringify(body), signal:abortCtl.signal
-    });
-    if(!res.ok){throw new Error('HTTP '+res.status+' — '+(await res.text()).slice(0,200));}
-    const reader=res.body.getReader(); const dec=new TextDecoder(); let buf='';
+      body:JSON.stringify(body),signal:abortCtl.signal});
+    if(!res.ok)throw new Error('HTTP '+res.status+' — '+(await res.text()).slice(0,200));
+    const reader=res.body.getReader();const dec=new TextDecoder();let buf='';
     while(true){
       const {done,value}=await reader.read(); if(done)break;
-      buf+=dec.decode(value,{stream:true});
-      const lines=buf.split('\n'); buf=lines.pop();
+      buf+=dec.decode(value,{stream:true});const lines=buf.split('\n');buf=lines.pop();
       for(const line of lines){
         const t=line.trim(); if(!t.startsWith('data:'))continue;
         const data=t.slice(5).trim(); if(data==='[DONE]')continue;
-        try{
-          const j=JSON.parse(data); const d=j.choices[0].delta;
-          if(d.reasoning_content){
-            reasoning+=d.reasoning_content;
+        try{const j=JSON.parse(data);const d=j.choices[0].delta;
+          if(d.reasoning_content){reasoning+=d.reasoning_content;
             if(!thinkEl){thinkEl=document.createElement('details');thinkEl.className='think';thinkEl.open=true;thinkEl.innerHTML='<summary>🧠 กำลังคิด...</summary><span class="rc"></span>';chat.insertBefore(thinkEl,botWrap);}
-            thinkEl.querySelector('.rc').textContent=reasoning;
-          }
-          if(d.content){content+=d.content; botEl.innerHTML=marked.parse(content);}
+            thinkEl.querySelector('.rc').textContent=reasoning;}
+          if(d.content){content+=d.content;botEl.innerHTML=marked.parse(content);}
           scrollDown();
         }catch(_){}
       }
     }
     if(thinkEl)thinkEl.querySelector('summary').textContent='🧠 ความคิด';
   }catch(err){
-    if(err.name==='AbortError'){
-      if(!content){botWrap.remove(); if(thinkEl)thinkEl.remove(); streaming=false;setSend(false);abortCtl=null;return;}
-    }else{
-      botEl.innerHTML='<span style="color:var(--danger)">⚠️ '+esc(err.message)+'</span>';
-      streaming=false; setSend(false); abortCtl=null; return;
-    }
+    if(err.name==='AbortError'){ if(!content){botWrap.remove();if(thinkEl)thinkEl.remove();streaming=false;setSend(false);abortCtl=null;return;} }
+    else{botEl.innerHTML='<span style="color:var(--danger)">⚠️ '+esc(err.message)+'</span>';streaming=false;setSend(false);abortCtl=null;return;}
   }
-  messages().push({role:'assistant',content,reasoning:reasoning||null});
-  saveConvs(); streaming=false; setSend(false); abortCtl=null; render(); renderConvs();
-  // buddy celebrates the finished answer
-  const avs=chat.querySelectorAll('.botrow .avatar');
-  const last=avs[avs.length-1];
-  if(last){last.innerHTML=buddy().happy; last.classList.add('happy');
-    setTimeout(()=>{if(last){last.innerHTML=buddy().idle; last.classList.remove('happy');}},1800);}
+  curGem.messages.push({role:'assistant',content,reasoning:reasoning||null});
+  saveGems();streaming=false;setSend(false);abortCtl=null;renderChat();
+  const avs=chat.querySelectorAll('.botrow .avatar');const last=avs[avs.length-1];
+  if(last){last.innerHTML=buddyOf(curGem).happy;last.classList.add('happy');
+    setTimeout(()=>{if(last){last.innerHTML=buddyOf(curGem).idle;last.classList.remove('happy');}},1800);}
 }
-function setSend(on){
-  const b=$('#send');
-  b.classList.toggle('stop',on);
-  b.textContent=on?'■':'➤';
+function setSend(on){const b=$('#send');b.classList.toggle('stop',on);b.textContent=on?'■':'➤';}
+
+// ---- create / edit ----
+function buildMascotPick(){const box=$('#mascotPick');box.innerHTML='';
+  BUDDIES.forEach((b,i)=>{const el=document.createElement('button');el.type='button';el.className='bopt'+(i===pickM?' sel':'');
+    el.innerHTML=b.idle;el.onclick=()=>{pickM=i;[...box.children].forEach((c,j)=>c.classList.toggle('sel',j===i))};box.appendChild(el);});}
+function buildTpl(){const box=$('#tpl');box.innerHTML='';
+  PRESETS.forEach(p=>{const el=document.createElement('div');el.className='tplc';
+    el.innerHTML=`<div class="tm">${BUDDIES[p.mascot].idle}</div><small>${escA(p.name)}</small>`;
+    el.onclick=()=>{$('#gName').value=p.name;$('#gRole').value=p.role;$('#gSys').value=p.sys;
+      pickM=p.mascot;buildMascotPick();tplPick=p;};box.appendChild(el);});}
+function openGem(id){
+  editId=id||null; tplPick=null; buildTpl();
+  if(id){const g=getGem(id);pickM=g.mascot;$('#gemTitle').textContent='✏️ แก้ไขเพื่อน';
+    $('#gName').value=g.name;$('#gRole').value=g.role||'';$('#gSys').value=g.sys;$('#delBtn').style.display=gems.length>1?'':'none';}
+  else{pickM=0;$('#gemTitle').textContent='✨ สร้างเพื่อนใหม่';$('#gName').value='';$('#gRole').value='';$('#gSys').value='';$('#delBtn').style.display='none';}
+  buildMascotPick(); $('#gemModal').classList.add('show');
 }
+$('#addBtn').onclick=()=>openGem(null);
+$('#gemCancel').onclick=()=>$('#gemModal').classList.remove('show');
+$('#gemSave').onclick=()=>{
+  const name=$('#gName').value.trim()||'เพื่อนซี้';
+  const role=$('#gRole').value.trim()||'ผู้ช่วย';
+  const sys=$('#gSys').value.trim()||('คุณคือ '+name+' ผู้ช่วยที่พูดไทยเป็นกันเอง น่ารัก ตอบกระชับ ช่วยได้จริง');
+  if(editId){const g=getGem(editId);g.name=name;g.role=role;g.sys=sys;g.mascot=pickM;
+    if(tplPick){g.greeting=tplPick.greeting;g.starters=tplPick.starters;}}
+  else{const g={id:gid(),name,role,sys,mascot:pickM,messages:[]};
+    if(tplPick){g.greeting=tplPick.greeting;g.starters=tplPick.starters;} gems.push(g);}
+  saveGems();$('#gemModal').classList.remove('show');renderHome();
+  if(editId&&curGem&&curGem.id===editId)openChat(editId);
+};
+$('#delBtn').onclick=()=>{
+  if(!editId)return;
+  if(!confirm('ลบเพื่อนคนนี้? ประวัติแชทจะหายไปด้วย'))return;
+  gems=gems.filter(g=>g.id!==editId);saveGems();
+  $('#gemModal').classList.remove('show');$('#chatView').classList.remove('show');curGem=null;renderHome();
+};
+
+// ---- settings ----
+function openSettings(){$('#keyInput').value=localStorage.getItem(LS.key)||'';
+  $('#model').value=localStorage.getItem(LS.model)||'deepseek-chat';$('#setModal').classList.add('show');}
+$('#setBtn').onclick=openSettings;
+$('#setCancel').onclick=()=>$('#setModal').classList.remove('show');
+$('#setSave').onclick=()=>{localStorage.setItem(LS.key,$('#keyInput').value.trim());
+  localStorage.setItem(LS.model,$('#model').value);$('#setModal').classList.remove('show');};
 
 // ---- PWA ----
-if('serviceWorker' in navigator){
-  window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
-}
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));}
 </script>
 </body>
 </html>
